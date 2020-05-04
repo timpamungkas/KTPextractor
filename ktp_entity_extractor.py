@@ -156,6 +156,11 @@ def get_attribute_ktp(ls_word,field_name,field_keywords,typo_tolerance, debug_mo
         if(len(value_words)>0):
             global max_x
             max_x = max([val['x2'] for val in value_words])
+        else:
+            pattern = re.compile("\d{16}")
+            for word in ls_word:
+                if (pattern.match(word['label'])):
+                    return word['label']
 
     if(field_name == 'kota'):
         field_value = ""
