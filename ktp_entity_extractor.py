@@ -318,27 +318,28 @@ def find_occupation(occ):
         return None
 
     result = occ
-    if(levenshtein('mengurus rumah tangga',occ.lower()) <= 6):
+    occ_without_space = occ.replace(" ", "").lower();
+    if(occ_without_space.startswith('mengurusrumahtangga') or levenshtein('mengurusrumahtangga',occ_without_space) <= 6):
             result = 'Mengurus Rumah Tangga'
-    if(levenshtein('buruh harian lepas',occ.lower()) <= 6):
+    if(occ_without_space.startswith('buruhharianlepas') or levenshtein('buruhharianlepas',occ_without_space) <= 6):
             result = 'Buruh Harian Lepas'
-    if(levenshtein('pegawai negeri sipil',occ.lower()) <= 5):
+    if(occ_without_space.startswith('pegawainegerisipil') or levenshtein('pegawai negeri sipil',occ_without_space) <= 5):
             result = 'Pegawai Negeri Sipil'
-    if(levenshtein('pelajar/mahasiswa',occ.lower()) <= 4):
+    if(occ_without_space.startswith('pelajar/mahasiswa') or levenshtein('pelajar/mahasiswa',occ_without_space) <= 4):
             result = 'Pelajar/Mahasiswa'
-    if(levenshtein('pelajar/mhs',occ.lower()) <= 3):
+    if(occ_without_space.startswith('pelajar/mhs') or levenshtein('pelajar/mhs',occ_without_space) <= 3):
             result = 'Pelajar/Mahasiswa'
-    if(levenshtein('belum/tidak bekerja',occ.lower()) <= 5):
+    if(occ_without_space.startswith('belum/tidakbekerja') or levenshtein('belum/tidak bekerja',occ_without_space) <= 5):
             result = 'Belum/Tidak Bekerja'
-    if(levenshtein('karyawan swasta',occ.lower()) <= 4):
+    if(occ_without_space.startswith('karyawanswasta') or levenshtein('karyawan swasta',occ_without_space) <= 4):
             result = 'Karyawan Swasta'
-    if(levenshtein('pegawai negeri',occ.lower()) <= 4):
+    if(occ_without_space.startswith('pegawainegeri') or levenshtein('pegawai negeri',occ_without_space) <= 4):
             result = 'Pegawai Negeri'
-    if(levenshtein('wiraswasta',occ[0:10].lower()) <= 3):
+    if(occ_without_space.startswith('wiraswasta') or levenshtein('wiraswasta',occ[0:10].lower()) <= 3):
             result = 'Wiraswasta'
-    if(levenshtein('peg negeri',occ.lower()) <= 3):
+    if(occ_without_space.startswith('pegnegeri') or levenshtein('peg negeri',occ_without_space) <= 3):
             result = 'Pegawai Negeri'
-    if(levenshtein('peg swasta',occ.lower()) <= 3):
+    if(occ_without_space.startswith('mengurusrumahtangga') or levenshtein('peg swasta',occ_without_space) <= 3):
             result = 'Pegawai Swasta'
 
     return result
