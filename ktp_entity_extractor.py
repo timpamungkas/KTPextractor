@@ -115,11 +115,18 @@ def get_attribute_ktp(ls_word,field_name,field_keywords,typo_tolerance, debug_mo
     ls_dist = [levenshtein(field_keywords, word.lower()) for word in new_ls_word]
     if np.min(ls_dist) > typo_tolerance:
 
-        if(field_name == 'kota' and field_keywords!='kota'):
+        if(field_name == 'kota' and field_keywords=='kabupaten'):
+            return get_attribute_ktp(ls_word,field_name,'jakarta',1,debug_mode)
+
+        if(field_name == 'kota' and field_keywords=='jakarta'):
             return get_attribute_ktp(ls_word,field_name,'kota',1,debug_mode)
 
         return None
     index = np.argmin(ls_dist)
+
+    if (field_keywords == 'jakarta'):
+        index += 1
+
     x,y = ls_word[index]['x1'], ls_word[index]['y1']
     w = ls_word[index]['w']
     degree = calDeg(ls_word[index]['x1'],ls_word[index]['y1'],ls_word[index]['x2'],ls_word[index]['y2'])
@@ -158,6 +165,8 @@ def get_attribute_ktp(ls_word,field_name,field_keywords,typo_tolerance, debug_mo
 
         if(field_keywords == 'kabupaten'):
             return 'KABUPATEN '+field_value
+        elif (field_keywords == 'jakarta'):
+            return 'JAKARTA ' +field_value 
         else:
             return 'KOTA '+field_value
 
@@ -338,6 +347,7 @@ def find_occupation(occ):
 fields_ktp = [
     {'field_name': 'provinsi', 'keywords': 'provinsi', 'typo_tolerance': 2},
     {'field_name': 'kota', 'keywords': 'kabupaten', 'typo_tolerance': 2},
+    {'field_name': 'kota', 'keywords': 'jakarta', 'typo_tolerance': 2},
     {'field_name': 'nik', 'keywords': 'nik', 'typo_tolerance': 1},
     {'field_name': 'nama', 'keywords': 'nama', 'typo_tolerance': 2},
     {'field_name': 'ttl', 'keywords': 'tempat/tgl', 'typo_tolerance': 5},
@@ -461,7 +471,8 @@ def extract_ktp_data(text_response,debug_mode=False):
     attributes['rt_rw'] = raw_result['rt_rw']
     attributes['kel_desa'] = raw_result['kel_desa']
     attributes['kecamatan'] = raw_result['kecamatan']
-    attributes['religion'] = raw_result['agama']
+    if (raw_result['agama'] != None): 
+        attributes['religion'] = raw_result['agama'].split()[0]
     attributes['expired_date'] = raw_result['berlaku_hingga']
 
     ktp_extract = ktp_extract.append(attributes,ignore_index=True)
@@ -470,7 +481,7 @@ def extract_ktp_data(text_response,debug_mode=False):
 
 def process_extract_entities(ocr_path):
         try:
-            text_response = np.load(ocr_path).item()
+            text_response = np.load(ocr_path, allow_pickle=True).item()
         except:
             print(ocr_path+' cannot be loaded')
 
