@@ -37,8 +37,9 @@ def process_ocr(img_path):
 
     #save the output file
     img_name = img_path.split(os.path.sep)[-1].split('.')[0]
-    json_name = cfg.json_loc+'ocr_'+img_name+'.npy'
-    np.save(json_name, text_response)
+    npy_filename = cfg.json_loc+'ocr_'+img_name+'.npy'
+    np.save(npy_filename, text_response)
+    return npy_filename
 
 if __name__ == '__main__':
     if(len(sys.argv) > 1):

@@ -257,7 +257,8 @@ def get_attribute_ktp(ls_word,field_name,field_keywords,typo_tolerance, debug_mo
                 if(levenshtein('seumur',field_value.lower()) <= 2):
                     return 'SEUMUR HIDUP'
                 else:
-                    return field_value
+                    # convert to iso date
+                    return extract_date(field_value)
             else:
                 return None
 
@@ -495,7 +496,7 @@ def process_extract_entities(ocr_path):
         print(ocr_path+' cannot be loaded')
 
     ktp_extract = extract_ktp_data(text_response)
-    return ktp_extract.iloc[0].to_json(orient="index")
+    return ktp_extract.iloc[0].to_json(orient="index", date_format="iso")
 
 if __name__ == '__main__':
     if(len(sys.argv) > 1):

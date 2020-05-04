@@ -3,7 +3,7 @@ import uuid
 import urllib.request
 import ocr_text_extractor as ocr
 import ktp_entity_extractor as extractor
-from flask import Flask, flash, request, redirect, render_template
+from flask import Flask, request, Response
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -35,10 +35,9 @@ def upload_file():
         # temporary file
         filename = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid1()) + '.' + file.filename.rsplit('.', 1)[1].lower())
         file.save(filename)
-        ocr.process_ocr(filename)
-        extracted = extractor.process_extract_entities(ocr_path)
-
-        return extracted
+        npy_filename = ocr.process_ocr(filename)
+        extracted = extractor.process_extract_entities(npy_filename)
+        return Response(response=extracted, status=200, content_type="application/json")
     else:
         return 'Allowed file types are ' + str(ALLOWED_EXTENSIONS), 400
 
