@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import sys
 import kyc_config as cfg
+import os
 
 client = vision.ImageAnnotatorClient.from_service_account_file(
 cfg.gcv_api_key_path
@@ -35,7 +36,7 @@ def process_ocr(img_path):
     text_response = get_text_response_from_path(img_path)
 
     #save the output file
-    img_name = img_path.split('/')[-1].split('.')[0]
+    img_name = img_path.split(os.path.sep)[-1].split('.')[0]
     json_name = cfg.json_loc+'ocr_'+img_name+'.npy'
     np.save(json_name, text_response)
 

@@ -8,6 +8,7 @@ import numpy as np
 import bisect
 from datetime import datetime
 import kyc_config as cfg
+import json
 
 def levenshtein(source, target):
     if len(source) < len(target):
@@ -471,13 +472,15 @@ def extract_ktp_data(text_response,debug_mode=False):
     else:
         attributes['blood_type'] = None
 
+    RELIGIONS = ['kristen', 'katolik', 'khatolik', 'katholik', 'islam', 'muslim', 'budha', 'buddha', 'hindu', 'konghucu', 'khonghucu']
+
     attributes['province'] = raw_result['provinsi']
     attributes['city'] = raw_result['kota']
     attributes['address'] = raw_result['alamat']
     attributes['rt_rw'] = raw_result['rt_rw']
     attributes['kel_desa'] = raw_result['kel_desa']
     attributes['kecamatan'] = raw_result['kecamatan']
-    if (raw_result['agama'] != None): 
+    if (raw_result['agama'] != None and raw_result['agama'].lower().startswith(tuple(RELIGIONS))): 
         attributes['religion'] = raw_result['agama'].split()[0]
     attributes['expired_date'] = raw_result['berlaku_hingga']
 
@@ -486,17 +489,13 @@ def extract_ktp_data(text_response,debug_mode=False):
     return ktp_extract
 
 def process_extract_entities(ocr_path):
-        try:
-            text_response = np.load(ocr_path, allow_pickle=True).item()
-        except:
-            print(ocr_path+' cannot be loaded')
+    try:
+        text_response = np.load(ocr_path, allow_pickle=True).item()
+    except:
+        print(ocr_path+' cannot be loaded')
 
-        ktp_extract = extract_ktp_data(text_response)
-        print(ktp_extract.iloc[0])
-
-        ocr_name = ocr_path.split('/')[-1].split('.')[0]
-        output_name = cfg.output_loc+'data_'+ocr_name+'.csv'
-        ktp_extract.to_csv(output_name,index=False)
+    ktp_extract = extract_ktp_data(text_response)
+    return ktp_extract.iloc[0].to_json(orient="index")
 
 if __name__ == '__main__':
     if(len(sys.argv) > 1):
