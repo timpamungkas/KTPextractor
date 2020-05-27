@@ -115,13 +115,8 @@ def get_attribute_ktp(ls_word,field_name,field_keywords,typo_tolerance, debug_mo
 
     ls_dist = [levenshtein(field_keywords, word.lower()) for word in new_ls_word]
     if np.min(ls_dist) > typo_tolerance:
-
-        if(field_name == 'kota' and field_keywords=='kabupaten'):
-            return get_attribute_ktp(ls_word,field_name,'jakarta',1,debug_mode)
-
-        if(field_name == 'kota' and field_keywords=='jakarta'):
+        if(field_name == 'kota' and field_keywords!='kota'):
             return get_attribute_ktp(ls_word,field_name,'kota',1,debug_mode)
-
         return None
     index = np.argmin(ls_dist)
 
@@ -395,9 +390,12 @@ def extract_ktp_data(text_response,debug_mode=False):
         field_value = get_attribute_ktp(ls_word,field['field_name'],field['keywords'],field['typo_tolerance'],debug_mode)
         if(field_value != None):
             field_value = str(field_value).replace(': ','').replace(':','')
-        #print(field['field_name'] +': '+str(field_value) )
-        raw_result[field['field_name']] = field_value
-
+        
+        if (field['field_name'] != 'kota'):
+            raw_result[field['field_name']] = field_value
+        else:
+            if (field['field_name'] not in raw_result or raw_result[field['field_name']] == None):
+                raw_result[field['field_name']] = field_value
 
     attributes['state'] = 'ok'
 
