@@ -313,7 +313,7 @@ def extract_date(date_string):
     if((date.year < 1910) or (date.year > 2100)):
         return None
 
-    return date
+    return date.strftime('%Y-%m-%dT%H:%M:%S')
 
 def find_occupation(occ):
     if(occ==None):
@@ -321,27 +321,27 @@ def find_occupation(occ):
 
     result = occ
     occ_without_space = occ.replace(" ", "").lower();
-    if(occ_without_space.startswith('mengurusrumahtangga') or levenshtein('mengurusrumahtangga',occ_without_space) <= 6):
+    if('mengurusrumahtangga' in occ_without_space or levenshtein('mengurusrumahtangga',occ_without_space) <= 6):
             result = 'Mengurus Rumah Tangga'
-    if(occ_without_space.startswith('buruhharianlepas') or levenshtein('buruhharianlepas',occ_without_space) <= 6):
+    if('buruhharianlepas'  in occ_without_space or levenshtein('buruhharianlepas',occ_without_space) <= 6):
             result = 'Buruh Harian Lepas'
-    if(occ_without_space.startswith('pegawainegerisipil') or levenshtein('pegawai negeri sipil',occ_without_space) <= 5):
+    if('pegawainegerisipil' in occ_without_space or levenshtein('pegawai negeri sipil',occ_without_space) <= 5):
             result = 'Pegawai Negeri Sipil'
-    if(occ_without_space.startswith('pelajar/mahasiswa') or levenshtein('pelajar/mahasiswa',occ_without_space) <= 4):
+    if('pelajar/mahasiswa' in occ_without_space or levenshtein('pelajar/mahasiswa',occ_without_space) <= 4):
             result = 'Pelajar/Mahasiswa'
-    if(occ_without_space.startswith('pelajar/mhs') or levenshtein('pelajar/mhs',occ_without_space) <= 3):
+    if('pelajar/mhs' in occ_without_space or levenshtein('pelajar/mhs',occ_without_space) <= 3):
             result = 'Pelajar/Mahasiswa'
-    if(occ_without_space.startswith('belum/tidakbekerja') or levenshtein('belum/tidak bekerja',occ_without_space) <= 5):
+    if('belum/tidakbekerja' in occ_without_space or levenshtein('belum/tidak bekerja',occ_without_space) <= 5):
             result = 'Belum/Tidak Bekerja'
-    if(occ_without_space.startswith('karyawanswasta') or levenshtein('karyawan swasta',occ_without_space) <= 4):
+    if('karyawanswasta' in occ_without_space or levenshtein('karyawan swasta',occ_without_space) <= 4):
             result = 'Karyawan Swasta'
-    if(occ_without_space.startswith('pegawainegeri') or levenshtein('pegawai negeri',occ_without_space) <= 4):
+    if('pegawainegeri' in occ_without_space or levenshtein('pegawai negeri',occ_without_space) <= 4):
             result = 'Pegawai Negeri'
-    if(occ_without_space.startswith('wiraswasta') or levenshtein('wiraswasta',occ[0:10].lower()) <= 3):
+    if('wiraswasta' in occ_without_space or levenshtein('wiraswasta',occ[0:10].lower()) <= 3):
             result = 'Wiraswasta'
-    if(occ_without_space.startswith('pegnegeri') or levenshtein('peg negeri',occ_without_space) <= 3):
+    if('pegnegeri' in occ_without_space or levenshtein('peg negeri',occ_without_space) <= 3):
             result = 'Pegawai Negeri'
-    if(occ_without_space.startswith('mengurusrumahtangga') or levenshtein('peg swasta',occ_without_space) <= 3):
+    if('mengurusrumahtangga' in occ_without_space or levenshtein('peg swasta',occ_without_space) <= 3):
             result = 'Pegawai Swasta'
 
     return result
@@ -388,7 +388,7 @@ def extract_ktp_data(text_response,debug_mode=False):
 
     for field in fields_ktp:
         field_value = get_attribute_ktp(ls_word,field['field_name'],field['keywords'],field['typo_tolerance'],debug_mode)
-        if(field_value != None):
+        if(field_value != None and field['field_name'] != 'berlaku_hingga'):
             field_value = str(field_value).replace(': ','').replace(':','')
         
         if (field['field_name'] != 'kota'):
