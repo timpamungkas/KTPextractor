@@ -45,7 +45,6 @@ if __name__ == '__main__':
     if(len(sys.argv) > 1):
         # input: image path
         img_path = sys.argv[1]
-        print('OCR processing '+img_path)
         process_ocr(img_path)
     else:
         print('argument is missing: image path')

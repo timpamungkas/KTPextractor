@@ -25,7 +25,7 @@ def allowed_file(filename):
 def hello_world():
    return 'OK'
 
-@app.route('/upload_ktp')
+@app.route('/upload_ktp', methods=['GET'])
 @app.route('/')
 def upload_form():
     return render_template('upload_ktp.html')
@@ -69,9 +69,21 @@ def api_ktp():
         file.save(filename)
         npy_filename = ocr.process_ocr(filename)
         extracted = extractor.process_extract_entities(npy_filename)
+        
         return Response(response=extracted, status=200, content_type="application/json")
     else:
         return 'Allowed file types are ' + str(ALLOWED_EXTENSIONS), 400
+
+@app.route('/vehicle_plate', methods=['POST'])
+def api_vehicle_plate():
+    if 'file' not in request.files:
+        return 'No file uploaded', 400
+           
+    file = request.files['file']
+    
+    if file.filename == '':
+        return 'No file uploaded', 400
+    if file and allowed_file(file.filename):
 
 if __name__ == '__main__':
     app.run(port=9090)
